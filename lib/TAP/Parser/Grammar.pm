@@ -71,9 +71,8 @@ sub _initialize {
     return $self;
 }
 
-my %language_for;
-
-{
+sub _get_version {
+    my ( $self, $requested_version ) = @_;
 
     # XXX the 'not' and 'ok' might be on separate lines in VMS ...
     my $ok  = qr/(?:not )?ok\b/;
@@ -213,7 +212,7 @@ my %language_for;
         },
     );
 
-    %language_for = (
+    my %language_for = (
         '12' => {
             tokens => \%v12,
         },
@@ -224,6 +223,7 @@ my %language_for;
             },
         },
     );
+    return $language_for{$requested_version};
 }
 
 ##############################################################################
@@ -244,7 +244,7 @@ sub set_version {
     my $self    = shift;
     my $version = shift;
 
-    if ( my $language = $language_for{$version} ) {
+    if ( my $language = $self->_get_version($version) ) {
         $self->{version} = $version;
         $self->{tokens}  = $language->{tokens};
 
