@@ -76,11 +76,11 @@ sub _get_version {
 
     # XXX the 'not' and 'ok' might be on separate lines in VMS ...
     my $ok  = qr/(?:not )?ok\b/;
-    my $num = qr/\d+/;
+    my $num = qr/[0-9]+/;
 
     my %v12 = (
         version => {
-            syntax  => qr/^TAP\s+version\s+(\d+)\s*\z/i,
+            syntax  => qr/^TAP\s+version\s+($num)\s*\z/i,
             handler => sub {
                 my ( $self, $line ) = @_;
                 my $version = $1;
@@ -88,14 +88,14 @@ sub _get_version {
             },
         },
         plan => {
-            syntax  => qr/^1\.\.(\d+)\s*(.*)\z/,
+            syntax  => qr/^1\.\.($num)\s*(.*)\z/,
             handler => sub {
                 my ( $self, $line ) = @_;
                 my ( $tests_planned, $tail ) = ( $1, $2 );
                 my $explanation = undef;
                 my $skip        = '';
 
-                if ( $tail =~ /^todo((?:\s+\d+)+)/ ) {
+                if ( $tail =~ /^todo((?:\s+$num)+)/ ) {
                     my @todo = split /\s+/, _trim($1);
                     return $self->_make_plan_token(
                         $line, $tests_planned, 'TODO',
@@ -178,7 +178,7 @@ sub _get_version {
     my %v13 = (
         %v12,
         plan => {
-            syntax  => qr/^1\.\.(\d+)(?:\s*#\s*SKIP\b(.*))?\z/i,
+            syntax  => qr/^1\.\.($num)(?:\s*#\s*SKIP\b(.*))?\z/i,
             handler => sub {
                 my ( $self, $line ) = @_;
                 my ( $tests_planned, $explanation ) = ( $1, $2 );
