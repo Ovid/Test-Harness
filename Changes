@@ -1,5 +1,11 @@
 Revision history for Test-Harness
 
+3.25_01
+        - Add README.md for github
+        - Use [0-9] to match digits instead of \d (the latter matches any
+          Unicode character for which isNumeric returns true).
+        - Encapsulate the version variable for the grammar.
+
 3.25    2012-06-05
         - Rereleased to fix CPAN permission problem. No functional change.
 
